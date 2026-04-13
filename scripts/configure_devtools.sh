@@ -26,8 +26,23 @@ print_error() {
     echo -e "${RED}✗ $1${NC}"
 }
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+. "$SCRIPT_DIR/lib/setup_ollama.sh"
+. "$SCRIPT_DIR/lib/setup_grok.sh"
+. "$SCRIPT_DIR/lib/setup_olol.sh"
+. "$SCRIPT_DIR/lib/setup_exo.sh"
+. "$SCRIPT_DIR/lib/setup_continue.sh"
+. "$SCRIPT_DIR/lib/setup_opencode.sh"
+. "$SCRIPT_DIR/lib/setup_crush.sh"
+. "$SCRIPT_DIR/lib/setup_claude.sh"
+. "$SCRIPT_DIR/lib/setup_all.sh"
+. "$SCRIPT_DIR/lib/setup_codex.sh"
+. "$SCRIPT_DIR/lib/setup_gemini.sh"
+. "$SCRIPT_DIR/lib/check_system_requirements.sh"
+
 # Configuration directory
 NEW_CFG_DIR='./configs'
+DATE="$(date +%Y-%m-%d)"
 BACKUP_DIR="$HOME/ai_tool_backups"
 
 # Create backup directory
@@ -36,264 +51,168 @@ mkdir -p "$BACKUP_DIR"
 # Function to backup existing configurations
 backup_existing_configs() {
     print_status "Backing up existing AI tool configurations..."
-
-    # Backup Continue.dev config
-    if [ -f "$HOME/.continue/config.yaml" ]; then
-        cp "$HOME/.continue/config.yaml" "$BACKUP_DIR/continue_config_backup.yaml"
-        print_status "Backed up Continue.dev config to $BACKUP_DIR/continue_config_backup.yaml"
-    elif [ -f "continue_config.yaml" ]; then
-        cp "continue_config.yaml" "$BACKUP_DIR/continue_config_backup.yaml"
-        print_status "Backed up Continue.dev config to $BACKUP_DIR/continue_config_backup.yaml"
-    fi
-
-    # Backup OpenCode config
-    if [ -f "$HOME/.opencode/config.jsonc" ]; then
-        cp "$HOME/.opencode/config.jsonc" "$BACKUP_DIR/opencode_config_backup.jsonc"
-        print_status "Backed up OpenCode config to $BACKUP_DIR/opencode_config_backup.jsonc"
-    elif [ -f "opencode.jsonc" ]; then
-        cp "opencode.jsonc" "$BACKUP_DIR/opencode_config_backup.jsonc"
-        print_status "Backed up OpenCode config to $BACKUP_DIR/opencode_config_backup.jsonc"
-    fi
-
-    # Backup Crush config
-    if [ -f "$HOME/.crush/config.json" ]; then
-        cp "$HOME/.crush/config.json" "$BACKUP_DIR/crush_config_backup.json"
-        print_status "Backed up Crush config to $BACKUP_DIR/crush_config_backup.json"
-    elif [ -f "crush.json" ]; then
-        cp "crush.json" "$BACKUP_DIR/crush_config_backup.json"
-        print_status "Backed up Crush config to $BACKUP_DIR/crush_config_backup.json"
-    fi
-
-    # Backup Claude Code config
-    if [ -f "$HOME/.claude-code/config.json" ]; then
-        cp "$HOME/.claude-code/config.json" "$BACKUP_DIR/claude_code_config_backup.json"
-        print_status "Backed up Claude Code config to $BACKUP_DIR/claude_code_config_backup.json"
-    fi
-
-    # Backup any other existing configurations
-    if [ -d "$HOME/.continue" ]; then
-        cp -r "$HOME/.continue" "$BACKUP_DIR/continue_backup"
-        print_status "Backed up Continue.dev directory to $BACKUP_DIR/continue_backup"
-    fi
-
-    if [ -d "$HOME/.opencode" ]; then
-        cp -r "$HOME/.opencode" "$BACKUP_DIR/opencode_backup"
-        print_status "Backed up OpenCode directory to $BACKUP_DIR/opencode_backup"
-    fi
-
-    if [ -d "$HOME/.crush" ]; then
-        cp -r "$HOME/.crush" "$BACKUP_DIR/crush_backup"
-        print_status "Backed up Crush directory to $BACKUP_DIR/crush_backup"
-    fi
-
-    if [ -d "$HOME/.claude-code" ]; then
-        cp -r "$HOME/.claude-code" "$BACKUP_DIR/claude_code_backup"
-        print_status "Backed up Claude Code directory to $BACKUP_DIR/claude_code_backup"
-    fi
-
+    backup_continue
+    backup_opencode
+    backup_crush
+    backup_claude
+    backup_grok
+    backup_olol
     print_status "All existing configurations backed up successfully"
 }
 
 # Function to restore configurations from backup
 restore_configs() {
     print_status "Restoring AI tool configurations from backup..."
-
-    # Restore Continue.dev config
-    if [ -f "$BACKUP_DIR/continue_config_backup.yaml" ]; then
-        cp "$BACKUP_DIR/continue_config_backup.yaml" "$HOME/.continue/config.yaml"
-        print_status "Restored Continue.dev config from backup"
-    fi
-
-    # Restore OpenCode config
-    if [ -f "$BACKUP_DIR/opencode_config_backup.jsonc" ]; then
-        cp "$BACKUP_DIR/opencode_config_backup.jsonc" "$HOME/.opencode/config.jsonc"
-        print_status "Restored OpenCode config from backup"
-    fi
-
-    # Restore Crush config
-    if [ -f "$BACKUP_DIR/crush_config_backup.json" ]; then
-        cp "$BACKUP_DIR/crush_config_backup.json" "$HOME/.crush/config.json"
-        print_status "Restored Crush config from backup"
-    fi
-
-    # Restore Claude Code config
-    if [ -f "$BACKUP_DIR/claude_code_config_backup.json" ]; then
-        cp "$BACKUP_DIR/claude_code_config_backup.json" "$HOME/.claude-code/config.json"
-        print_status "Restored Claude Code config from backup"
-    fi
-
-    # Restore entire directories if they exist
-    if [ -d "$BACKUP_DIR/continue_backup" ]; then
-        cp -r "$BACKUP_DIR/continue_backup"/* "$HOME/.continue/" 2>/dev/null || true
-        print_status "Restored Continue.dev directory from backup"
-    fi
-
-    if [ -d "$BACKUP_DIR/opencode_backup" ]; then
-        cp -r "$BACKUP_DIR/opencode_backup"/* "$HOME/.opencode/" 2>/dev/null || true
-        print_status "Restored OpenCode directory from backup"
-    fi
-
-    if [ -d "$BACKUP_DIR/crush_backup" ]; then
-        cp -r "$BACKUP_DIR/crush_backup"/* "$HOME/.crush/" 2>/dev/null || true
-        print_status "Restored Crush directory from backup"
-    fi
-
-    if [ -d "$BACKUP_DIR/claude_code_backup" ]; then
-        cp -r "$BACKUP_DIR/claude_code_backup"/* "$HOME/.claude-code/" 2>/dev/null || true
-        print_status "Restored Claude Code directory from backup"
-    fi
-
+    restore_continue
+    restore_opencode
+    restore_crush
+    restore_claude
+    restore_grok
+    restore_olol
     print_status "All configurations restored successfully"
 }
 
-# Function to copy new configurations
-copy_new_configs() {
-    print_status "Copying new AI tool configurations..."
-
-    # Create necessary directories if they don't exist
-    mkdir -p "$HOME/.continue"
-    mkdir -p "$HOME/.opencode"
-    mkdir -p "$HOME/.crush"
-    mkdir -p "$HOME/.claude-code"
-
-    # Copy new configurations from NEW_CFG_DIR
-    if [ -d "$NEW_CFG_DIR" ]; then
-        # Copy Continue.dev config
-        if [ -f "$NEW_CFG_DIR/continue_config.yaml" ]; then
-            cp "$NEW_CFG_DIR/continue_config.yaml" "$HOME/.continue/config.yaml"
-            print_status "Copied new Continue.dev config"
+verify_installations() {
+    print_info "Verifying tool installations..."
+    local verification_results=""
+    local all_passed=true
+    for check in verify_claude_code verify_opencode verify_crush verify_codex verify_gemini verify_grok; do
+        local label="${check#verify_}"
+        if $check; then
+            verification_results="$verification_results ✓ $label - OK\n"
+        else
+            verification_results="$verification_results ✗ $label - FAILED\n"
+            all_passed=false
         fi
-
-        # Copy OpenCode config
-        if [ -f "$NEW_CFG_DIR/opencode.jsonc" ]; then
-            cp "$NEW_CFG_DIR/opencode.jsonc" "$HOME/.opencode/config.jsonc"
-            print_status "Copied new OpenCode config"
-        fi
-
-        # Copy Crush config
-        if [ -f "$NEW_CFG_DIR/crush.json" ]; then
-            cp "$NEW_CFG_DIR/crush.json" "$HOME/.crush/config.json"
-            print_status "Copied new Crush config"
-        fi
-
-        # Copy Claude Code config
-        if [ -f "$NEW_CFG_DIR/claude_code_config.json" ]; then
-            cp "$NEW_CFG_DIR/claude_code_config.json" "$HOME/.claude-code/config.json"
-            print_status "Copied new Claude Code config"
-        fi
-
-        # Copy any other configuration files from the directory
-        for config_file in "$NEW_CFG_DIR"/*; do
-            if [ -f "$config_file" ]; then
-                filename=$(basename "$config_file")
-                case "$filename" in
-                    "continue_config.yaml"|"opencode.jsonc"|"crush.json"|"claude_code_config.json")
-                        # These are handled above, skip them
-                        ;;
-                    *)
-                        # Copy any other files to appropriate directories or root
-                        if [[ "$filename" == *"continue"* ]]; then
-                            cp "$config_file" "$HOME/.continue/"
-                        elif [[ "$filename" == *"opencode"* ]]; then
-                            cp "$config_file" "$HOME/.opencode/"
-                        elif [[ "$filename" == *"crush"* ]]; then
-                            cp "$config_file" "$HOME/.crush/"
-                        elif [[ "$filename" == *"claude"* ]]; then
-                            cp "$config_file" "$HOME/.claude-code/"
-                        else
-                            # Copy to root or handle as needed
-                            cp "$config_file" "$HOME/"
-                        fi
-                        print_status "Copied $filename"
-                        ;;
-                esac
-            fi
-        done
-
-        print_status "All new configurations copied successfully"
+    done
+    echo -e "$verification_results"
+    if [ "$all_passed" = true ]; then
+        print_status "All AI development tools are properly installed and functional"
     else
-        print_error "Configuration directory $NEW_CFG_DIR not found!"
-        exit 1
+        print_warning "Some tools may require manual configuration or additional setup"
+        return 1
     fi
 }
 
-# Function to setup Ollama and Grok CLI
-setup_ollama_and_grok() {
-    print_info "Setting up Ollama and Grok CLI..."
+install_tools() {
+    check_system_requirements
+    verify_claude_code  || setup_claude    || print_error "Failed to install Claude Code"
+    verify_opencode     || setup_opencode  || print_error "Failed to install OpenCode"
+    verify_crush        || setup_crush     || print_error "Failed to install Crush"
+    verify_codex        || setup_codex     || print_error "Failed to install Codex"
+    verify_gemini       || setup_gemini    || print_error "Failed to install Gemini"
+    verify_grok         || setup_grok      || print_error "Failed to install Grok"
+    verify_installations
+}
 
-    # Check if ollama is installed
-    if ! command -v ollama &> /dev/null; then
-        print_warning "Ollama not installed. Please install from: https://ollama.com/download"
-        return 1
+# Dispatch a single action+tool pair
+_run_one() {
+    local action="$1" tool="$2"
+    case "$action:$tool" in
+        setup:claude)     setup_claude ;;
+        setup:codex)      setup_codex ;;
+        setup:continue)   setup_continue ;;
+        setup:crush)      setup_crush ;;
+        setup:exo)        setup_exo ;;
+        setup:gemini)     setup_gemini ;;
+        setup:grok)       setup_grok ;;
+        setup:ollama)     setup_ollama ;;
+        setup:olol)       setup_olol ;;
+        setup:opencode)   setup_opencode ;;
+        restore:claude)   restore_claude ;;
+        restore:continue) restore_continue ;;
+        restore:crush)    restore_crush ;;
+        restore:grok)     restore_grok ;;
+        restore:olol)     restore_olol ;;
+        restore:opencode) restore_opencode ;;
+        restore:*)        print_info "No restore available for $tool — skipping" ;;
+        backup:claude)    backup_claude ;;
+        backup:continue)  backup_continue ;;
+        backup:crush)     backup_crush ;;
+        backup:grok)      backup_grok ;;
+        backup:olol)      backup_olol ;;
+        backup:opencode)  backup_opencode ;;
+        backup:*)         print_info "No backup available for $tool — skipping" ;;
+    esac
+}
+
+_run_for_tools() {
+    local action="$1"; shift
+    for tool in "$@"; do
+        _run_one "$action" "$tool"
+    done
+}
+
+# Interactive tool picker and action selector
+interactive_menu() {
+    # All available tools and their descriptions
+    local tools=(claude codex continue crush exo gemini grok ollama olol opencode)
+    local descs=(
+        "claude      - install CLI + deploy config"
+        "codex       - install Codex CLI"
+        "continue    - deploy Continue.dev config"
+        "crush       - install + deploy config"
+        "exo         - install exo distributed inference"
+        "gemini      - install Gemini CLI"
+        "grok        - install + deploy config"
+        "ollama      - start server + pull base model"
+        "olol        - install Ollama load balancer"
+        "opencode    - install + deploy config"
+    )
+    # Default selections: claude(0), codex(1), continue(2), gemini(5), ollama(7), opencode(9)
+    local sel=(1 1 1 0 0 1 0 1 0 1)
+
+    while true; do
+        echo ""
+        echo "=== Select tools  (number to toggle, a=all, n=none, q=confirm) ==="
+        for i in "${!tools[@]}"; do
+            local mark; [ "${sel[$i]}" = "1" ] && mark="[x]" || mark="[ ]"
+            printf "  %s %2d. %s\n" "$mark" "$((i+1))" "${descs[$i]}"
+        done
+        echo ""
+        printf "Choice: "
+        read -r input
+        case "$input" in
+            q|"") break ;;
+            a) for i in "${!tools[@]}"; do sel[$i]=1; done ;;
+            n) for i in "${!tools[@]}"; do sel[$i]=0; done ;;
+            *)
+                for num in $(echo "$input" | tr ',;' '  '); do
+                    if [[ "$num" =~ ^[0-9]+$ ]] && (( num >= 1 && num <= ${#tools[@]} )); then
+                        local idx=$((num-1))
+                        sel[$idx]=$(( 1 - sel[$idx] ))
+                    fi
+                done
+                ;;
+        esac
+    done
+
+    local chosen=()
+    for i in "${!tools[@]}"; do
+        [ "${sel[$i]}" = "1" ] && chosen+=("${tools[$i]}")
+    done
+
+    if [ ${#chosen[@]} -eq 0 ]; then
+        print_warning "No tools selected."
+        return
     fi
 
-    # Start Ollama server
-    print_info "Starting Ollama server..."
-    ollama serve &
+    echo ""
+    echo "=== Select action ==="
+    echo "  1. setup   - backup existing + apply new config / install"
+    echo "  2. restore - restore from latest backup"
+    echo "  3. backup  - backup only"
+    echo ""
+    printf "Action [1]: "
+    read -r act
+    act="${act:-1}"
 
-    # Pull a model
-    print_info "Pulling llama3 model..."
-    ollama pull llama3
-
-    # Create Grok environment file
-    print_info "Creating Grok environment configuration..."
-
-    # Create _grok file with environment variables
-    mkdir -p "$HOME/.config/grok"
-
-    cat > "$HOME/.config/grok/_grok" << 'EOF'
-# Grok CLI Configuration
-export GROK_BASE_URL=http://localhost:11434
-export GROK_MODEL=llama3
-EOF
-
-    # Determine shell and copy to appropriate directory
-    if [ -n "$ZSH_VERSION" ]; then
-        # Zsh shell
-        mkdir -p "$HOME/.zshrc.d"
-        cp "$HOME/.config/grok/_grok" "$HOME/.zshrc.d/grok_env"
-        print_status "Grok environment file copied to $HOME/.zshrc.d/grok_env"
-    elif [ -n "$BASH_VERSION" ]; then
-        # Bash shell
-        mkdir -p "$HOME/.profile.d"
-        cp "$HOME/.config/grok/_grok" "$HOME/.profile.d/grok_env"
-        print_status "Grok environment file copied to $HOME/.profile.d/grok_env"
-    else
-        # Fallback - copy to ~/.profile.d for bash or create .env file
-        mkdir -p "$HOME/.profile.d"
-        cp "$HOME/.config/grok/_grok" "$HOME/.profile.d/grok_env"
-        print_status "Grok environment file copied to $HOME/.profile.d/grok_env"
-    fi
-
-    # Create a simple sourcing script
-    cat > grok_setup.sh << 'EOF'
-#!/bin/bash
-# Grok CLI Setup Script
-
-echo "Sourcing Grok environment variables..."
-if [ -f "$HOME/.profile.d/grok_env" ]; then
-    source "$HOME/.profile.d/grok_env"
-    echo "Grok environment variables sourced from ~/.profile.d/grok_env"
-elif [ -f "$HOME/.zshrc.d/grok_env" ]; then
-    source "$HOME/.zshrc.d/grok_env"
-    echo "Grok environment variables sourced from ~/.zshrc.d/grok_env"
-else
-    echo "Warning: Grok environment file not found in standard locations"
-fi
-
-echo ""
-echo "To use Grok CLI:"
-echo "1. Source this script: source grok_setup.sh"
-echo "2. Use: grok --prompt \"Explain this codebase\""
-echo ""
-echo "This enables fully offline AI coding assistance when combined with Ollama, preserving privacy and reducing costs."
-EOF
-
-    chmod +x grok_setup.sh
-
-    print_status "Ollama and Grok CLI setup completed successfully"
-    print_info "Run 'source grok_setup.sh' to set up Grok CLI environment variables"
-    print_info "Use: grok --prompt \"Explain this codebase\" for offline AI assistance"
+    case "$act" in
+        1|setup)   _run_for_tools setup   "${chosen[@]}" ;;
+        2|restore) _run_for_tools restore "${chosen[@]}" ;;
+        3|backup)  _run_for_tools backup  "${chosen[@]}" ;;
+        *) print_error "Invalid action"; return 1 ;;
+    esac
 }
 
 # Main execution function
@@ -305,20 +224,70 @@ main() {
         restore)
             restore_configs
             ;;
+        continue)
+            setup_continue
+            ;;
+        opencode)
+            setup_opencode
+            ;;
+        crush)
+            setup_crush
+            ;;
+        claude)
+            setup_claude
+            ;;
         setup)
-            backup_existing_configs
-            copy_new_configs
-            setup_ollama_and_grok
+            setup_all
             ;;
         ollama)
-            setup_ollama_and_grok
+            setup_ollama
+            ;;
+        grok)
+            setup_grok
+            ;;
+        olol)
+            setup_olol
+            ;;
+        exo)
+            setup_exo
+            ;;
+        codex)
+            setup_codex
+            ;;
+        gemini)
+            setup_gemini
+            ;;
+        check)
+            check_system_requirements
+            ;;
+        verify)
+            verify_installations
+            ;;
+        install)
+            install_tools
+            ;;
+        "")
+            interactive_menu
             ;;
         *)
-            echo "Usage: $0 {backup|restore|setup|ollama}"
-            echo "  backup - Backup existing configurations"
-            echo "  restore - Restore configurations from backup"
-            echo "  setup - Perform complete setup with backups and new configs"
-            echo "  ollama - Setup Ollama and Grok CLI (offline AI)"
+            echo "Usage: $0 {backup|restore|continue|opencode|crush|claude|setup|ollama|grok|olol|exo|codex|gemini|check|verify|install}"
+            echo "  (no args)   - Interactive tool picker"
+            echo "  backup      - Backup all existing configurations"
+            echo "  restore     - Restore all configurations from backup"
+            echo "  continue    - Setup Continue.dev (backup + copy config)"
+            echo "  opencode    - Setup OpenCode (backup + copy config)"
+            echo "  crush       - Setup Crush (backup + copy config)"
+            echo "  claude      - Setup Claude Code (install CLI + copy config)"
+            echo "  setup       - Setup all tool configs at once"
+            echo "  ollama      - Setup Ollama server"
+            echo "  grok        - Setup Grok CLI (offline AI via Ollama)"
+            echo "  olol        - Setup olol: Ollama load balancer across multiple machines"
+            echo "  exo         - Setup exo: split inference across Apple Silicon devices"
+            echo "  codex       - Install Codex CLI"
+            echo "  gemini      - Install Gemini CLI"
+            echo "  check       - Check system requirements"
+            echo "  verify      - Verify all tool installations"
+            echo "  install     - Install all tools (check + install-if-missing + verify)"
             exit 1
             ;;
     esac
@@ -326,17 +295,7 @@ main() {
     echo ""
     echo "=== AI TOOL CONFIGURATION PROCESS COMPLETED ==="
     echo "Backup directory: $BACKUP_DIR"
-    echo ""
-    echo "Available operations:"
-    echo "1. backup - Creates backups of existing configurations"
-    echo "2. restore - Restores configurations from backups"
-    echo "3. setup - Performs complete backup and configuration setup"
-    echo "4. ollama - Sets up Ollama and Grok CLI for offline AI"
 }
 
 # Run the script with provided argument
 main "$1"
-
-echo ""
-echo "=== BACKUP AND SETUP COMPLETED ==="
-echo "Files processed in: $BACKUP_DIR"

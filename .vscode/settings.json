@@ -18,5 +18,11 @@
         "titleBar.inactiveBackground": "#9c3c1b99",
         "titleBar.inactiveForeground": "#e7e7e799"
     },
-    "peacock.color": "#9c3c1b"
+    "peacock.color": "#9c3c1b",
+    "cSpell.words": [
+        "CHEATSHEET",
+        "modelfiles",
+        "olol",
+        "opencode"
+    ]
 }

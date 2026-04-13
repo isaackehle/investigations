@@ -140,3 +140,16 @@ install_via_npm() {
         return 1
     fi
 }
+
+
+# Install Homebrew if not present
+setup_homebrew() {
+    print_info "Installing Homebrew..."
+
+    if ! command_exists "brew"; then
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        print_status "Homebrew installed successfully"
+    else
+        print_status "Homebrew already installed"
+    fi
+}

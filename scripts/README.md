@@ -127,13 +127,13 @@ baseURL: "http://localhost:11434/v1"
 Tool-capable instruct models (work with all opencode agents):
 
 - **Code agent** (`code`):
-  - `hf.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q4_K_M` — purpose-built agentic coder, MoE 30B
+  - `qwen3-coder-30b-220k` — purpose-built agentic coder, MoE 30B, 220k ctx (Modelfile alias)
 - **Think agent** (`think`):
   - `hf.co/bartowski/Mistral-Small-24B-Instruct-2501-GGUF:Q4_K_M` — Mistral Small 24B, strong tool calling
 - **Write agent** (`write`):
-  - `qwen/qwen3.5-35b-a3b` — Qwen 3.5 35B MoE via Ollama
+  - `qwen3.5:35b-a3b` — Qwen 3.5 35B MoE via Ollama
 - **Research agent** (`research`):
-  - `qwen/qwen3.5-14b` — Qwen 3.5 14B via Ollama
+  - `dengcao/Qwen3-14B:Q5_K_M` — Qwen 3.5 14B via Ollama
 - **Plan agent** (`plan` / `small_model`):
   - `hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q4_K_M` — fast 4B for planning and routing
 
@@ -142,37 +142,75 @@ Reasoning/thinking distills (no tool support — chat-only, select manually):
 - `hf.co/mradermacher/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-i1-GGUF:Q4_K_M`
 - `yolo0perris/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-GGUF_Q3_K_M`
 - `mradermacher/Qwen2.5-7B-Instruct-1M-Thinking-Claude-Gemini-GPT5.2-DISTILL-GGUF:Q4_K_M`
-- `deepseek/deepseek-r1-0528-qwen3-8b`
+- `deepseek/deepseek-r1:8b`
 
 ### Ollama model installation
 
-- Agent models (tool-capable, pulled from HuggingFace via Ollama)
+Two models use custom Modelfiles in `./modelfiles/` to set a specific context window on a shared base
+weight. Pull the base first, then create both aliases:
 
 ```shell
-# code agent
-ollama pull hf.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q4_K_M
+# Pull the shared base weight (UD-Q5_K_XL, ~25 GB)
+ollama pull hf.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:UD-Q5_K_XL
+
+# Create the 32k-context alias (~21 GB loaded — default code agent)
+ollama create qwen3-coder-30b-32k -f ./modelfiles/qwen3-coder-30b-32k.txt
+
+# Create the 220k-context alias (~38 GB loaded — use when you need huge context)
+ollama create qwen3-coder-30b-220k -f ./modelfiles/qwen3-coder-30b-220k.txt
+```
+
+The Modelfiles simply set `num_ctx`; you can inspect or edit them directly:
+
+```
+modelfiles/qwen3-coder-30b-32k.txt    → num_ctx 32768
+modelfiles/qwen3-coder-30b-220k.txt   → num_ctx 220000
+```
+
+#### Agent models (tool-capable — work with all opencode agents)
+
+```shell
+# code agent variants (see above for Modelfile-based install)
+# qwen3-coder-30b-32k   ← default
+# qwen3-coder-30b-220k  ← large context
 
 # think agent
 ollama pull hf.co/bartowski/Mistral-Small-24B-Instruct-2501-GGUF:Q4_K_M
+ollama pull mistral-small3.2:latest
+ollama pull mfdoom/deepseek-r1-tool-calling:8b
+
+# write agent
+ollama pull qwen3.5:27b
+ollama pull qwen3.5:35b-a3b
+
+# research agent
+ollama pull dengcao/Qwen3-14B:Q5_K_M
+ollama pull mistral-nemo:latest
 
 # plan agent / small_model
 ollama pull hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q4_K_M
+ollama pull phi4-mini:latest
+
+# additional code models
+ollama pull codestral:22b
+ollama pull qwen2.5-coder:32b
+ollama pull qwen2.5-coder:7b
+ollama pull qwen2.5-coder:1.5b
 ```
 
-- Ollama registry models (write / research agents)
-
-```shell
-ollama pull qwen3.5:35b-a3b
-ollama pull qwen3.5:14b
-```
-
-- Reasoning/thinking distills (no tool support — chat-only)
+#### Reasoning/thinking distills (no tool support — chat-only, select manually)
 
 ```shell
 ollama pull hf.co/mradermacher/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-i1-GGUF:Q4_K_M
 ollama pull yolo0perris/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-GGUF_Q3_K_M
-ollama pull hf.co/mradermacher/Huihui-Qwen3-Coder-30B-A3B-Instruct-abliterated-i1-GGUF:Q4_K_M
+ollama pull mradermacher/Qwen2.5-7B-Instruct-1M-Thinking-Claude-Gemini-GPT5.2-DISTILL-GGUF:Q4_K_M
+ollama pull deepseek-r1:8b
 ```
+
+## LM Studio
+
+lms Qwen3-Coder-30B-A3B-Instruct-MLX-4bit
+
 
 ## Environment Variable Setup
 
@@ -230,38 +268,36 @@ grok --prompt "Explain this codebase"
 ## Directory Structure
 
 ```
-Here's the updated directory structure with the lib folder properly integrated:
-
-```markdown
-scripts/                         # Script files for various tasks/
-├── configure_devtools.sh        # Main configuration script - Manages AI tool configurations with backup/restore capabilities
-├── configs/                     # New configuration files - Contains all AI tool configuration files
-│  ├── continue_config.yaml      # Configuration file for Continue.dev
-│  ├── crush.json                # Configuration file for Crush
-│  ├── grok.json                 # Configuration file for Grok
-│  ├── gemini.json               # Configuration file for Gemini
-│  └── opencode.jsonc            # Configuration file for OpenCode
-├── lib/                         # Helper functions and utilities - Contains helper scripts for managing AI tools
-│   ├── helpers.sh               # Common helper functions and logging utilities
-│   ├── installers.sh            # Tool installer functions - Contains installation logic for various AI tools
-│   ├── install_grok.sh          # Grok installation script - Installs and configures the Grok AI tool
-│   ├── install_opencode.sh      # OpenCode installation script - Installs and configures the OpenCode AI tool
-│   ├── install_crush.sh         # Crush installation script - Installs and configures the Crush AI tool
-│   ├── install_codex.sh         # Codex installation script - Installs and configures the Codex AI tool
-│   ├── install_claude_code.sh   # Claude Code installation script - Installs and configures the Claude Code AI tool
-│   ├── install_gemini.sh        # Gemini installation script - Installs and configures the Gemini AI tool
-│   └── ollama-models-lib.sh     # Ollama model management - Functions for managing Ollama models by purpose
-├── install_devtools.sh          # Devtools installation script - Installs development tools required for AI tool management
-├── install_ollama.sh            # Ollama CLI setup script - Configures Ollama environment variables and shell integration
-├── README.md                    # This file - Documentation for the AI tool configuration manager
-└── grok_setup.sh                # Grok CLI setup script - Configures Grok environment variables and shell integration
+scripts/
+├── configure_devtools.sh        # Main entry point — interactive picker, backup, restore, per-tool setup
+├── ollama-manager.sh            # Ollama server and model management utilities
+├── README.md                    # This file
+├── configs/                     # Config files deployed to tool directories on setup
+│   ├── CHEATSHEET.md            # Quick-reference for models and agent roles
+│   ├── continue_config.yaml     # Continue.dev config
+│   ├── crush.json               # Crush config
+│   ├── gemini.json              # Gemini config
+│   ├── grok.json                # Grok config
+│   └── opencode.jsonc           # OpenCode config (providers, models, agents)
+├── modelfiles/                  # Ollama Modelfiles for custom context-window aliases
+│   ├── qwen3-coder-30b-32k.txt  # Qwen3-Coder 30B @ 32k ctx  (~21 GB loaded)
+│   └── qwen3-coder-30b-220k.txt # Qwen3-Coder 30B @ 220k ctx (~38 GB loaded)
+└── lib/                         # Sourced by configure_devtools.sh — one file per tool
+    ├── helpers.sh               # print_status/info/warning/error, command_exists
+    ├── check_system_requirements.sh
+    ├── ollama-models-lib.sh     # Ollama model pull/management functions
+    ├── setup_all.sh             # Runs all config-deploying setup_* functions
+    ├── setup_claude.sh          # Claude Code — install CLI + deploy config + backup/restore
+    ├── setup_codex.sh           # Codex CLI — install only
+    ├── setup_continue.sh        # Continue.dev — deploy config + backup/restore
+    ├── setup_crush.sh           # Crush — install + deploy config + backup/restore
+    ├── setup_exo.sh             # exo — install only (distributed Apple Silicon inference)
+    ├── setup_gemini.sh          # Gemini CLI — install only
+    ├── setup_grok.sh            # Grok CLI — install + deploy env config + backup/restore
+    ├── setup_ollama.sh          # Ollama — start server + pull base model
+    ├── setup_olol.sh            # olol — install + create starter config + backup/restore
+    └── setup_opencode.sh        # OpenCode — install + deploy config + backup/restore
 ```
-
-This updated structure shows:
-1. The `lib/` directory with helper functions and utilities
-2. Individual installation scripts for each AI tool in the lib folder
-3. The `ollama-models-lib.sh` which contains functions for managing Ollama models by purpose
-4. Proper indentation and formatting to clearly show the directory hierarchy
 ## Privacy and Security
 
 The configuration system prioritizes privacy:

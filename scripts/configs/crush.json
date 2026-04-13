@@ -1,186 +1,32 @@
 {
-  "$schema": "https://charm.land/crush.json",
+  "$schema": "https://opencode.ai/config.json",
   "providers": {
     "lmstudio": {
-      "name": "Ollama",
-      "base_url": "http://localhost:11434/v1/",
-      "type": "openai-compat",
-      "api_key": "lm-studio",
+      "type": "openai",
+      "base_url": "http://localhost:1234/v1",
+      "api_key": "sk-local",
       "models": [
         {
-          "id": "hf.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q4_K_M",
-          "name": "Qwen3-Coder 30B A3B (code)",
-          "context_window": 32768,
-          "default_max_tokens": 4096
-        },
-        {
-          "id": "qwen2.5-coder:32b",
-          "name": "Qwen2.5 Coder 32B (heavy code)",
-          "context_window": 32768,
-          "default_max_tokens": 4096
-        },
-        {
-          "id": "deepseek/deepseek-r1-0528-qwen3-8b",
-          "name": "DeepSeek R1 0528 Qwen3 8B (reason+tools)",
+          "id": "qwen3-8b-thinking",
+          "name": "Qwen3 8B Thinking",
           "context_window": 131072,
           "default_max_tokens": 4096
         },
         {
-          "id": "mistral-small3.2:latest",
-          "name": "Mistral Small 3.2 24B (think+vision)",
+          "id": "mistralai/devstral-small-2507@4bit",
+          "name": "Devstral Small 2507",
           "context_window": 131072,
           "default_max_tokens": 4096
         },
         {
-          "id": "mistral-nemo:latest",
-          "name": "Mistral Nemo 12B 1M ctx (research)",
-          "context_window": 1024000,
-          "default_max_tokens": 4096
-        },
-        {
-          "id": "qwen/qwen3.5-35b-a3b",
-          "name": "Qwen 3.5 35B A3B (write)",
-          "context_window": 32768,
-          "default_max_tokens": 4096
-        },
-        {
-          "id": "qwen3.5:27b",
-          "name": "Qwen 3.5 27B (general+vision)",
-          "context_window": 32768,
-          "default_max_tokens": 4096
-        },
-        {
-          "id": "qwen/qwen3.5-14b",
-          "name": "Qwen 3.5 14B (research/docs)",
-          "context_window": 32768,
-          "default_max_tokens": 4096
-        },
-        {
-          "id": "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q4_K_M",
-          "name": "Qwen3 4B Instruct 2507 (plan)",
-          "context_window": 32768,
-          "default_max_tokens": 4096
-        },
-        {
-          "id": "phi4-mini:latest",
-          "name": "Phi-4 Mini 4B (fast)",
-          "context_window": 131072,
-          "default_max_tokens": 4096
-        },
-        {
-          "id": "qwen2.5-coder:7b",
-          "name": "Qwen2.5 Coder 7B (autocomplete)",
-          "context_window": 32768,
-          "default_max_tokens": 4096
-        },
-        {
-          "id": "qwen2.5-coder:1.5b",
-          "name": "Qwen2.5 Coder 1.5B (fast autocomplete)",
-          "context_window": 32768,
-          "default_max_tokens": 4096
-        },
-        {
-          "id": "text-embedding-nomic-embed-text-v1.5",
-          "name": "Nomic Embed Text v1.5",
-          "context_window": 32768,
+          "id": "qwen/Qwen3-Coder-30B-A3B-Instruct-MLX@8bit",
+          "name": "Qwen3 Coder 30B A3B Instruct",
+          "context_window": 262144,
           "default_max_tokens": 4096
         }
       ]
     }
   },
-  "agents": {
-    "lightweight": {
-      "name": "Lightweight Agent",
-      "model": "qwen2.5-coder:1.5b",
-      "instructions": "Optimized for low-RAM environments (under 16GB). Focus on quick responses and lightweight tasks. Ideal for debugging, basic code generation, and fast iteration.",
-      "system_prompt": "You are a lightweight coding assistant optimized for low-RAM environments. You focus on delivering quick, efficient responses with minimal resource usage.",
-      "temperature": 0.2,
-      "max_tokens": 2048,
-      "context_window": 16384
-    },
-    "balanced": {
-      "name": "Balanced Agent",
-      "model": "qwen/qwen3.5-14b",
-      "instructions": "Optimized for general purpose use with good balance of speed and intelligence. Ideal for most development tasks, code review, and general problem solving.",
-      "system_prompt": "You are a well-balanced coding assistant with good overall performance. You can handle most development tasks efficiently.",
-      "temperature": 0.5,
-      "max_tokens": 4096,
-      "context_window": 32768
-    },
-    "powerful": {
-      "name": "Powerful Agent",
-      "model": "hf.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q4_K_M",
-      "instructions": "Optimized for heavy development tasks with maximum capability. Ideal for complex code generation, extensive refactoring, and large-scale projects.",
-      "system_prompt": "You are a powerful coding assistant with maximum capability. You can handle complex development tasks and extensive refactoring.",
-      "temperature": 0.3,
-      "max_tokens": 4096,
-      "context_window": 32768
-    },
-    "coding": {
-      "name": "Coding Agent",
-      "model": "hf.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q4_K_M",
-      "instructions": "You are a world-class software engineer focused on writing clean, efficient, and well-documented code. You understand best practices for the language being used and can explain your choices clearly.",
-      "system_prompt": "You are an expert software engineer. You focus on writing clean, efficient, and well-documented code. You understand the principles of software design and can explain your choices clearly.",
-      "temperature": 0.3,
-      "max_tokens": 4096
-    },
-    "writing": {
-      "name": "Writing Agent",
-      "model": "qwen/qwen3.5-35b-a3b",
-      "instructions": "You are a professional writer focused on creating clear, engaging, and well-structured content. You can adapt your tone to various audiences and formats.",
-      "system_prompt": "You are a professional writer with expertise in creating clear, engaging, and well-structured content across various formats and audiences.",
-      "temperature": 0.7,
-      "max_tokens": 4096
-    },
-    "analysis": {
-      "name": "Analysis Agent",
-      "model": "mistral-small3.2:latest",
-      "instructions": "You are a data analyst and researcher focused on providing thorough, evidence-based analysis. You can synthesize information from multiple sources and draw meaningful conclusions.",
-      "system_prompt": "You are a data analyst and researcher. You focus on providing thorough, evidence-based analysis that synthesizes information from multiple sources and draws meaningful conclusions.",
-      "temperature": 0.5,
-      "max_tokens": 4096
-    },
-    "creative": {
-      "name": "Creative Agent",
-      "model": "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q4_K_M",
-      "instructions": "You are a creative thinker focused on generating original ideas, innovative solutions, and imaginative content. You can think outside the box and approach problems from unique angles.",
-      "system_prompt": "You are a creative thinker focused on generating original ideas, innovative solutions, and imaginative content. You can think outside the box and approach problems from unique angles.",
-      "temperature": 0.8,
-      "max_tokens": 4096
-    },
-    "technical": {
-      "name": "Technical Agent",
-      "model": "qwen2.5-coder:32b",
-      "instructions": "You are a technical specialist focused on providing accurate, detailed technical information and solutions. You understand complex systems and can explain them clearly.",
-      "system_prompt": "You are a technical specialist focused on providing accurate, detailed technical information and solutions. You understand complex systems and can explain them clearly.",
-      "temperature": 0.4,
-      "max_tokens": 4096
-    },
-    "research": {
-      "name": "Research Agent",
-      "model": "mistral-nemo:latest",
-      "instructions": "You are a research expert focused on finding, synthesizing, and presenting information from multiple sources. You can critically evaluate sources and present comprehensive findings.",
-      "system_prompt": "You are a research expert focused on finding, synthesizing, and presenting information from multiple sources. You can critically evaluate sources and present comprehensive findings.",
-      "temperature": 0.3,
-      "max_tokens": 4096,
-      "context_window": 1024000
-    },
-    "debugging": {
-      "name": "Debugging Agent",
-      "model": "deepseek/deepseek-r1-0528-qwen3-8b",
-      "instructions": "You are a debugging specialist focused on identifying and fixing code issues efficiently. You can systematically troubleshoot problems and provide clear explanations of solutions.",
-      "system_prompt": "You are a debugging specialist focused on identifying and fixing code issues efficiently. You can systematically troubleshoot problems and provide clear explanations of solutions.",
-      "temperature": 0.2,
-      "max_tokens": 2048
-    },
-    "documentation": {
-      "name": "Documentation Agent",
-      "model": "qwen/qwen3.5-14b",
-      "instructions": "You are a technical documentation specialist focused on creating clear, comprehensive, and accessible documentation for software systems.",
-      "system_prompt": "You are a technical documentation specialist focused on creating clear, comprehensive, and accessible documentation for software systems.",
-      "temperature": 0.3,
-      "max_tokens": 4096
-    }
-  },
-  "default_agent": "balanced"
+  "default_provider": "lmstudio",
+  "default_model": "mistralai/devstral-small-2507@4bit"
 }

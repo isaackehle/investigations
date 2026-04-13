@@ -6,8 +6,8 @@
         "baseURL": "http://localhost:11434/v1"
       },
       "models": {
-        "deepseek/deepseek-r1-0528-qwen3-8b": {
-          "name": "DeepSeek R1 0528 Qwen3 8B (reason+tools)"
+        "mfdoom/deepseek-r1-tool-calling:8b": {
+          "name": "DeepSeek R1 Tool-Calling 8B (reason+tools)"
         }
       }
     }

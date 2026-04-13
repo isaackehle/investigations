@@ -6,7 +6,7 @@
                 "baseURL": "http://localhost:11434/v1"
             },
             "models": {
-                "qwen/qwen3.5-14b": {
+                "dengcao/Qwen3-14B:Q5_K_M": {
                     "name": "Qwen 3.5 14B"
                 }
             }

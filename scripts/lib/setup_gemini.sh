@@ -1,7 +1,7 @@
 . ./helpers.sh
 
 # Install Gemini (try npm first, fallback to manual)
-install_gemini() {
+setup_gemini() {
     print_info "Installing Gemini..."
 
     # Try npm installation first
@@ -39,6 +39,10 @@ install_gemini() {
     return 1
 }
 
+verify_gemini() {
+    check_tool_with_version "Gemini" "gemini"
+}
+
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    install_gemini
+    setup_gemini
 fi

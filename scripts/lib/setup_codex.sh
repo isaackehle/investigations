@@ -1,7 +1,7 @@
 . ./helpers.sh
 
 # Install Codex (try npm first, fallback to manual)
-install_codex() {
+setup_codex() {
     print_info "Installing Codex..."
 
     # Try npm installation first
@@ -33,6 +33,10 @@ install_codex() {
     return 1
 }
 
+verify_codex() {
+    check_tool_with_version "Codex" "codex"
+}
+
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-    install_codex
+    setup_codex
 fi
