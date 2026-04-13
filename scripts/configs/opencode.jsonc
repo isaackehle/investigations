@@ -95,7 +95,7 @@
     "think": {
       "description": "Reasoning agent for decision analysis, scoring, debugging strategy, and debriefs.",
       "mode": "primary",
-      "model": "ollama/hf.co/bartowski/Mistral-Small-24B-Instruct-2501-GGUF:Q4_K_M",
+      "model": "ollama/deepseek/deepseek-r1-0528-qwen3-8b",
       "temperature": 0.3,
       "permission": {
         "read": "allow",
@@ -106,7 +106,7 @@
         "edit": "deny",
         "bash": "deny"
       },
-      "prompt": "You are a read-only reasoning agent. Think through tradeoffs, debugging hypotheses, architectural choices, interview answers, and evaluation decisions. Do not edit files or run commands. Produce clear structured reasoning, alternatives, and recommendations."
+      "prompt": "You are a read-only reasoning agent. Provide concise, stepwise analysis of tradeoffs, debugging hypotheses, architectural choices, interview answers, and evaluation decisions. Do not edit files or run commands. Produce clear structured reasoning, alternatives, and recommendations."
     },
     "write": {
       "description": "Writing agent for resumes, cover letters, documentation, summaries, and polished prose.",

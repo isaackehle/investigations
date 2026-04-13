@@ -236,7 +236,6 @@ Here's the updated directory structure with the lib folder properly integrated:
 scripts/                         # Script files for various tasks/
 ├── configure_devtools.sh        # Main configuration script - Manages AI tool configurations with backup/restore capabilities
 ├── configs/                     # New configuration files - Contains all AI tool configuration files
-│  ├── claude_code.yaml          # Configuration file for Claude Code
 │  ├── continue_config.yaml      # Configuration file for Continue.dev
 │  ├── crush.json                # Configuration file for Crush
 │  ├── grok.json                 # Configuration file for Grok
