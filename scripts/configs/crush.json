@@ -20,20 +20,14 @@
           "default_max_tokens": 4096
         },
         {
-          "id": "hf.co/bartowski/Mistral-Small-24B-Instruct-2501-GGUF:Q4_K_M",
-          "name": "Mistral Small 24B 2501 (think)",
-          "context_window": 32768,
+          "id": "deepseek/deepseek-r1-0528-qwen3-8b",
+          "name": "DeepSeek R1 0528 Qwen3 8B (reason+tools)",
+          "context_window": 131072,
           "default_max_tokens": 4096
         },
         {
           "id": "mistral-small3.2:latest",
           "name": "Mistral Small 3.2 24B (think+vision)",
-          "context_window": 131072,
-          "default_max_tokens": 4096
-        },
-        {
-          "id": "mfdoom/deepseek-r1-tool-calling:8b",
-          "name": "DeepSeek R1 Tool-Calling 8B (reason+tools)",
           "context_window": 131072,
           "default_max_tokens": 4096
         },
@@ -81,7 +75,7 @@
         },
         {
           "id": "qwen2.5-coder:1.5b",
-          "name": "Qwen2.5 Coder 1.5b (fast autocomplete)",
+          "name": "Qwen2.5 Coder 1.5B (fast autocomplete)",
           "context_window": 32768,
           "default_max_tokens": 4096
         },
@@ -173,7 +167,7 @@
     },
     "debugging": {
       "name": "Debugging Agent",
-      "model": "mfdoom/deepseek-r1-tool-calling:8b",
+      "model": "deepseek/deepseek-r1-0528-qwen3-8b",
       "instructions": "You are a debugging specialist focused on identifying and fixing code issues efficiently. You can systematically troubleshoot problems and provide clear explanations of solutions.",
       "system_prompt": "You are a debugging specialist focused on identifying and fixing code issues efficiently. You can systematically troubleshoot problems and provide clear explanations of solutions.",
       "temperature": 0.2,

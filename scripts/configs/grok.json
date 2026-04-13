@@ -6,8 +6,8 @@
         "baseURL": "http://localhost:11434/v1"
       },
       "models": {
-        "hf.co/bartowski/Mistral-Small-24B-Instruct-2501-GGUF:Q4_K_M": {
-          "name": "Mistral Small 24B Instruct"
+        "deepseek/deepseek-r1-0528-qwen3-8b": {
+          "name": "DeepSeek R1 0528 Qwen3 8B (reason+tools)"
         }
       }
     }
