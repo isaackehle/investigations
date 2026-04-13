@@ -1,0 +1,15 @@
+{
+  "provider": {
+    "ollama": {
+      "name": "Ollama (Local)",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "hf.co/bartowski/Mistral-Small-24B-Instruct-2501-GGUF:Q4_K_M": {
+          "name": "Mistral Small 24B Instruct"
+        }
+      }
+    }
+  }
+}

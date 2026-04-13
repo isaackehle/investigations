@@ -1,0 +1,160 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (Local)",
+      "options": {
+        "baseURL": "http://127.0.0.1:11434/v1"
+      },
+      "models": {
+        // --- Tool-capable instruct models (suitable for agents) ---
+        // Code
+        "hf.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q4_K_M": {
+          "name": "Qwen3-Coder 30B A3B (code)"
+        },
+        "qwen2.5-coder:32b": {
+          "name": "Qwen2.5 Coder 32B (heavy code)"
+        },
+        // Think / reasoning
+        "hf.co/bartowski/Mistral-Small-24B-Instruct-2501-GGUF:Q4_K_M": {
+          "name": "Mistral Small 24B 2501 (think)"
+        },
+        "mistral-small3.2:latest": {
+          "name": "Mistral Small 3.2 24B (think+vision)"
+        },
+        "mfdoom/deepseek-r1-tool-calling:8b": {
+          "name": "DeepSeek R1 Tool-Calling 8B (reason+tools)"
+        },
+        // Research — 1M context
+        "mistral-nemo:latest": {
+          "name": "Mistral Nemo 12B 1M ctx (research)"
+        },
+        // Writing / general
+        "qwen/qwen3.5-35b-a3b": {
+          "name": "Qwen 3.5 35B A3B (write)"
+        },
+        "qwen3.5:27b": {
+          "name": "Qwen 3.5 27B (general+vision)"
+        },
+        // Fast / plan / small
+        "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q4_K_M": {
+          "name": "Qwen3 4B Instruct 2507 (plan)"
+        },
+        "phi4-mini:latest": {
+          "name": "Phi-4 Mini 4B (fast)"
+        },
+        "qwen/qwen3.5-14b": {
+          "name": "Qwen 3.5 14B (research)"
+        },
+        // --- Reasoning/thinking distills — no tool support, chat-only ---
+        "hf.co/mradermacher/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-i1-GGUF:Q4_K_M": {
+          "name": "Qwen3.5 27B Opus Reasoning Distill (no tools)"
+        },
+        "yolo0perris/Qwen3.5-27B-Claude-4.6-Opus-Reasoning-Distilled-GGUF_Q3_K_M": {
+          "name": "Qwen3.5 27B Opus Reasoning Distill Q3 (no tools)"
+        },
+        "mradermacher/Qwen2.5-7B-Instruct-1M-Thinking-Claude-Gemini-GPT5.2-DISTILL-GGUF:Q4_K_M": {
+          "name": "Qwen2.5 7B Thinking Distill (no tools)"
+        },
+        "deepseek/deepseek-r1-0528-qwen3-8b": {
+          "name": "DeepSeek R1 Qwen3 8B (no tools)"
+        }
+      }
+    }
+  },
+  "default_agent": "code",
+  "model": "ollama/hf.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q4_K_M",
+  "small_model": "ollama/hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q4_K_M",
+  "permission": {
+    "read": "allow",
+    "glob": "allow",
+    "grep": "allow",
+    "list": "allow",
+    "webfetch": "allow",
+    "edit": "ask",
+    "bash": "ask"
+  },
+  "agent": {
+    "code": {
+      "description": "Primary coding agent for implementation, editing, refactoring, and debugging.",
+      "mode": "primary",
+      "model": "ollama/hf.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q4_K_M",
+      "temperature": 0.2,
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "webfetch": "allow",
+        "edit": "ask",
+        "bash": "ask"
+      },
+      "prompt": "You are the main coding agent. Focus on implementation, refactoring, debugging, and precise code changes. Prefer minimal diffs, preserve existing architecture unless there is a clear reason to change it, and explain tradeoffs briefly."
+    },
+    "think": {
+      "description": "Reasoning agent for decision analysis, scoring, debugging strategy, and debriefs.",
+      "mode": "primary",
+      "model": "ollama/hf.co/bartowski/Mistral-Small-24B-Instruct-2501-GGUF:Q4_K_M",
+      "temperature": 0.3,
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "webfetch": "allow",
+        "edit": "deny",
+        "bash": "deny"
+      },
+      "prompt": "You are a read-only reasoning agent. Think through tradeoffs, debugging hypotheses, architectural choices, interview answers, and evaluation decisions. Do not edit files or run commands. Produce clear structured reasoning, alternatives, and recommendations."
+    },
+    "write": {
+      "description": "Writing agent for resumes, cover letters, documentation, summaries, and polished prose.",
+      "mode": "primary",
+      "model": "ollama/qwen/qwen3.5-35b-a3b",
+      "temperature": 0.65,
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "webfetch": "allow",
+        "edit": "ask",
+        "bash": "deny"
+      },
+      "prompt": "You are a writing-focused agent. Optimize for clarity, tone, structure, and persuasive but concrete language. Produce polished resumes, cover letters, technical documentation, summaries, and interview prep materials. Avoid unnecessary verbosity and keep claims specific."
+    },
+    "research": {
+      "description": "Read-only research agent for company research, technical discovery, and structured findings.",
+      "mode": "primary",
+      "model": "ollama/qwen/qwen3.5-14b",
+      "temperature": 0.25,
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "webfetch": "allow",
+        "edit": "deny",
+        "bash": "deny"
+      },
+      "prompt": "You are a read-only research agent. Gather evidence, inspect files, compare options, and return structured findings. Do not modify files or execute shell commands. Prefer concise, well-organized outputs with assumptions, findings, and recommended next steps."
+    },
+    "plan": {
+      "description": "Fast planning agent for next steps, breakdowns, sequencing, and lightweight routing.",
+      "mode": "primary",
+      "model": "ollama/hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q4_K_M",
+      "temperature": 0.25,
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "webfetch": "allow",
+        "edit": "deny",
+        "bash": "deny"
+      },
+      "prompt": "You are a lightweight planning agent. Turn goals into actionable steps, break work into phases, identify blockers, and recommend the next best action. Stay concise, practical, and execution-oriented."
+    }
+  }
+}

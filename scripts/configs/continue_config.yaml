@@ -1,0 +1,71 @@
+# Models Used:
+# - Code/Chat: hf.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q4_K_M
+# - Think: hf.co/bartowski/Mistral-Small-24B-Instruct-2501-GGUF:Q4_K_M
+# - Autocomplete (light): qwen2.5-coder:1.5b
+# - Autocomplete (heavy): qwen2.5-coder:7b
+# - Apply/Insert: codestral:22b
+# - Embed: nomic-embed-text:latest
+# - Rerank: zerank-2
+
+name: "Claude Code Enhanced Configuration"
+version: "1.0.0"
+schema: "v1"
+
+models:
+  # Primary coding model — tool-capable
+  - name: "Qwen3-Coder 30B A3B"
+    provider: "ollama"
+    model: "hf.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q4_K_M"
+    roles:
+      - "chat"
+      - "edit"
+      - "summarize"
+
+  # Chat/think model — Mistral Small 24B, strong tool calling
+  - name: "Mistral Small 24B Instruct"
+    provider: "ollama"
+    model: "hf.co/bartowski/Mistral-Small-24B-Instruct-2501-GGUF:Q4_K_M"
+    roles:
+      - "chat"
+
+  # Apply/insert — Codestral 22B, best code insertion (no tool calls needed for apply)
+  - name: "Codestral 22B"
+    provider: "ollama"
+    model: "codestral:22b"
+    roles:
+      - "apply"
+
+  # Autocomplete (light) — fast, low RAM
+  - name: "Qwen2.5 Coder 1.5B"
+    provider: "ollama"
+    model: "qwen2.5-coder:1.5b"
+    roles:
+      - "autocomplete"
+
+  # Autocomplete (heavy) — better quality when resources allow
+  - name: "Qwen2.5 Coder 7B"
+    provider: "ollama"
+    model: "qwen2.5-coder:7b"
+    roles:
+      - "autocomplete"
+
+  # Embedding model for semantic search
+  - name: "Nomic Embed Text"
+    provider: "ollama"
+    model: "nomic-embed-text:latest"
+    roles:
+      - "embed"
+
+  # Reranking model
+  - name: "zerank-2"
+    provider: "ollama"
+    model: "zerank-2"
+    roles:
+      - "rerank"
+
+  # Fast planning / small tasks
+  - name: "Qwen3 4B Instruct 2507"
+    provider: ollama
+    model: "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q4_K_M"
+    roles:
+      - "chat"
