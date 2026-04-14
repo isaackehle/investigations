@@ -26,13 +26,13 @@
 
 ### Agents (invoke with `/agent <name>` or select in sidebar)
 
-| Agent            | Model                       | Use for                                        |
-| ---------------- | --------------------------- | ---------------------------------------------- |
-| `code` (default) | qwen3-coder-30b-32k         | Editing, refactoring, debugging, tool calls    |
-| `think`          | deepseek-r1-tool-calling:8b | Tradeoff analysis, debugging strategy, scoring |
-| `write`          | qwen3.5:27b                 | Resumes, cover letters, docs, polished prose   |
+| Agent            | Model                       | Use for                                                    |
+| ---------------- | --------------------------- | ---------------------------------------------------------- |
+| `code` (default) | qwen3-coder-30b-32k         | Editing, refactoring, debugging, tool calls                |
+| `think`          | deepseek-r1-tool-calling:8b | Tradeoff analysis, debugging strategy, scoring             |
+| `write`          | qwen3.5:27b                 | Resumes, cover letters, docs, polished prose               |
 | `research`       | Qwen3-14B                   | Codebase/web investigation — saves to Obsidian `Research/` |
-| `plan`           | Qwen3-4B                    | Next steps, task breakdown, routing            |
+| `plan`           | Qwen3-4B                    | Next steps, task breakdown, routing                        |
 
 ### Quick reference
 
