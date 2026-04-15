@@ -47,7 +47,7 @@ All configuration files are stored in the `./configs` directory:
 - `continue_config.yaml` - Continue.dev configuration
 - `opencode.jsonc` - OpenCode configuration
 - `crush.json` - Crush configuration
-- `claude_code_config.json` - Claude Code configuration
+- `claude_code.json` - Claude Code configuration
 
 ## Ollama and Grok CLI Setup
 

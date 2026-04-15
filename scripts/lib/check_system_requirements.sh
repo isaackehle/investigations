@@ -1,4 +1,4 @@
-. ./helpers.sh
+. "$(dirname "${BASH_SOURCE[0]}")/helpers.sh"
 
 # Check common system requirements: curl, git, node, npm, python3, docker
 check_system_requirements() {

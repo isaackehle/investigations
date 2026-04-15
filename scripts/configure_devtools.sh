@@ -38,6 +38,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 . "$SCRIPT_DIR/lib/setup_all.sh"
 . "$SCRIPT_DIR/lib/setup_codex.sh"
 . "$SCRIPT_DIR/lib/setup_gemini.sh"
+. "$SCRIPT_DIR/lib/setup_litellm.sh"
 . "$SCRIPT_DIR/lib/check_system_requirements.sh"
 
 # Configuration directory
@@ -57,6 +58,7 @@ backup_existing_configs() {
     backup_claude
     backup_grok
     backup_olol
+    backup_litellm
     print_status "All existing configurations backed up successfully"
 }
 
@@ -69,6 +71,7 @@ restore_configs() {
     restore_claude
     restore_grok
     restore_olol
+    restore_litellm
     print_status "All configurations restored successfully"
 }
 
@@ -76,7 +79,7 @@ verify_installations() {
     print_info "Verifying tool installations..."
     local verification_results=""
     local all_passed=true
-    for check in verify_claude_code verify_opencode verify_crush verify_codex verify_gemini verify_grok; do
+    for check in verify_claude_code verify_opencode verify_crush verify_codex verify_gemini verify_grok verify_litellm; do
         local label="${check#verify_}"
         if $check; then
             verification_results="$verification_results ✓ $label - OK\n"
@@ -102,6 +105,7 @@ install_tools() {
     verify_codex        || setup_codex     || print_error "Failed to install Codex"
     verify_gemini       || setup_gemini    || print_error "Failed to install Gemini"
     verify_grok         || setup_grok      || print_error "Failed to install Grok"
+    verify_litellm      || setup_litellm   || print_error "Failed to install LiteLLM"
     verify_installations
 }
 
@@ -118,11 +122,13 @@ _run_one() {
         setup:grok)       setup_grok ;;
         setup:ollama)     setup_ollama ;;
         setup:olol)       setup_olol ;;
+        setup:litellm)    setup_litellm ;;
         setup:opencode)   setup_opencode ;;
         restore:claude)   restore_claude ;;
         restore:continue) restore_continue ;;
         restore:crush)    restore_crush ;;
         restore:grok)     restore_grok ;;
+        restore:litellm)  restore_litellm ;;
         restore:olol)     restore_olol ;;
         restore:opencode) restore_opencode ;;
         restore:*)        print_info "No restore available for $tool — skipping" ;;
@@ -130,6 +136,7 @@ _run_one() {
         backup:continue)  backup_continue ;;
         backup:crush)     backup_crush ;;
         backup:grok)      backup_grok ;;
+        backup:litellm)   backup_litellm ;;
         backup:olol)      backup_olol ;;
         backup:opencode)  backup_opencode ;;
         backup:*)         print_info "No backup available for $tool — skipping" ;;
@@ -146,7 +153,7 @@ _run_for_tools() {
 # Interactive tool picker and action selector
 interactive_menu() {
     # All available tools and their descriptions
-    local tools=(claude codex continue crush exo gemini grok ollama olol opencode)
+    local tools=(claude codex continue crush exo gemini grok litellm ollama olol opencode)
     local descs=(
         "claude      - install CLI + deploy config"
         "codex       - install Codex CLI"
@@ -155,12 +162,13 @@ interactive_menu() {
         "exo         - install exo distributed inference"
         "gemini      - install Gemini CLI"
         "grok        - install + deploy config"
+        "litellm     - install proxy + deploy config"
         "ollama      - start server + pull base model"
         "olol        - install Ollama load balancer"
         "opencode    - install + deploy config"
     )
-    # Default selections: claude(0), codex(1), continue(2), gemini(5), ollama(7), opencode(9)
-    local sel=(1 1 1 0 0 1 0 1 0 1)
+    # Default selections: claude(0), codex(1), continue(2), gemini(5), litellm(7), ollama(8), opencode(10)
+    local sel=(1 1 1 0 0 1 0 1 1 0 1)
 
     while true; do
         echo ""
@@ -257,6 +265,9 @@ main() {
         gemini)
             setup_gemini
             ;;
+        litellm)
+            setup_litellm
+            ;;
         check)
             check_system_requirements
             ;;
@@ -270,7 +281,7 @@ main() {
             interactive_menu
             ;;
         *)
-            echo "Usage: $0 {backup|restore|continue|opencode|crush|claude|setup|ollama|grok|olol|exo|codex|gemini|check|verify|install}"
+            echo "Usage: $0 {backup|restore|continue|opencode|crush|claude|setup|ollama|grok|olol|exo|codex|gemini|litellm|check|verify|install}"
             echo "  (no args)   - Interactive tool picker"
             echo "  backup      - Backup all existing configurations"
             echo "  restore     - Restore all configurations from backup"
@@ -285,6 +296,7 @@ main() {
             echo "  exo         - Setup exo: split inference across Apple Silicon devices"
             echo "  codex       - Install Codex CLI"
             echo "  gemini      - Install Gemini CLI"
+            echo "  litellm     - Setup LiteLLM proxy (install + deploy config)"
             echo "  check       - Check system requirements"
             echo "  verify      - Verify all tool installations"
             echo "  install     - Install all tools (check + install-if-missing + verify)"

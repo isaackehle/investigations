@@ -42,44 +42,6 @@ command_exists() {
     command -v "$1" &> /dev/null
 }
 
-
-
-# Check if a tool is installed (detailed check)
-check_tool() {
-    local tool_name="$1"
-    local command_name="$2"
-
-    # Check CLI command first
-    if command_exists "$command_name"; then
-        print_status "$tool_name is already installed"
-        return 0
-    fi
-
-    # Check for node modules (for tools that might be installed via npm)
-    if command_exists "node" && npm list -g "$command_name" &> /dev/null; then
-        print_status "$tool_name Node module found"
-        return 0
-    fi
-
-    # Check for executable in common locations
-    local common_paths=(
-        "/usr/local/bin/$command_name"
-        "$HOME/.local/bin/$command_name"
-        "$HOME/.npm-global/bin/$command_name"
-        "/opt/$command_name/bin/$command_name"
-    )
-
-    for path in "${common_paths[@]}"; do
-        if [ -f "$path" ]; then
-            print_status "$tool_name executable found at $path"
-            return 0
-        fi
-    done
-
-    print_warning "$tool_name not found"
-    return 1
-}
-
 # Enhanced tool check with version information
 check_tool_with_version() {
     local tool_name="$1"
