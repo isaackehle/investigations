@@ -1,4 +1,4 @@
-. ./helpers.sh
+. "$(dirname "${BASH_SOURCE[0]}")/helpers.sh"
 
 # Set up exo — distributed split inference across Apple Silicon devices
 # exo shards model layers across multiple Macs, reducing per-device memory requirements.

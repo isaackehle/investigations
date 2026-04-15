@@ -1,4 +1,4 @@
-. ./helpers.sh
+. "$(dirname "${BASH_SOURCE[0]}")/helpers.sh"
 
 # Install Codex (try npm first, fallback to manual)
 setup_codex() {

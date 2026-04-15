@@ -1,4 +1,4 @@
-. ./helpers.sh
+. "$(dirname "${BASH_SOURCE[0]}")/helpers.sh"
 
 # Install and configure OpenCode
 # Expects: BACKUP_DIR, DATE, NEW_CFG_DIR (set by configure_devtools.sh) for config deploy

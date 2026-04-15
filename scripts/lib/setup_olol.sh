@@ -1,4 +1,4 @@
-. ./helpers.sh
+. "$(dirname "${BASH_SOURCE[0]}")/helpers.sh"
 
 # Set up olol — Ollama load balancer across multiple machines
 # olol routes different requests to different Ollama backends (one full model per machine).

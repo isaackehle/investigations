@@ -1,8 +1,8 @@
-. ./helpers.sh
-. ./setup_continue.sh
-. ./setup_opencode.sh
-. ./setup_crush.sh
-. ./setup_claude.sh
+. "$(dirname "${BASH_SOURCE[0]}")/helpers.sh"
+. "$(dirname "${BASH_SOURCE[0]}")/setup_continue.sh"
+. "$(dirname "${BASH_SOURCE[0]}")/setup_opencode.sh"
+. "$(dirname "${BASH_SOURCE[0]}")/setup_crush.sh"
+. "$(dirname "${BASH_SOURCE[0]}")/setup_claude.sh"
 
 setup_all() {
     setup_continue

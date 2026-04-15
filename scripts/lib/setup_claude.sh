@@ -1,4 +1,4 @@
-. ./helpers.sh
+. "$(dirname "${BASH_SOURCE[0]}")/helpers.sh"
 
 # Expects: BACKUP_DIR, DATE, NEW_CFG_DIR (set by configure_devtools.sh)
 
@@ -31,11 +31,11 @@ setup_claude() {
         cp "$HOME/.claude-code/config.json" "$BACKUP_DIR/claude_code_config_backup_$DATE.json" && \
         print_status "Backed up Claude Code config"
     mkdir -p "$HOME/.claude-code"
-    if [ -f "$NEW_CFG_DIR/claude_code_config.json" ]; then
-        cp "$NEW_CFG_DIR/claude_code_config.json" "$HOME/.claude-code/config.json"
+    if [ -f "$NEW_CFG_DIR/claude_code.json" ]; then
+        cp "$NEW_CFG_DIR/claude_code.json" "$HOME/.claude-code/config.json"
         print_status "Copied Claude Code config"
     else
-        print_warning "No claude_code_config.json found in $NEW_CFG_DIR"
+        print_warning "No claude_code.json found in $NEW_CFG_DIR"
     fi
 }
 
