@@ -7,6 +7,7 @@ setup_continue() {
         cp "$HOME/.continue/config.yaml" "$BACKUP_DIR/continue_config_backup_$DATE.yaml" && \
         print_status "Backed up Continue.dev config"
     mkdir -p "$HOME/.continue"
+
     if [ -f "$NEW_CFG_DIR/continue_config.yaml" ]; then
         cp "$NEW_CFG_DIR/continue_config.yaml" "$HOME/.continue/config.yaml"
         print_status "Copied Continue.dev config"

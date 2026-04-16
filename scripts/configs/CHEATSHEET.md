@@ -103,6 +103,60 @@ Resume Task                     continue a previous task from history
 
 ---
 
+## Claude Code
+
+**Config:** `scripts/configs/claude_code.json` → copy to `~/.claude/settings.json` (global) or `.claude/settings.json` (project)
+ 
+Requires LiteLLM running on port 4000 — see [LiteLLM](#litellm) below. Claude Code sends Anthropic-format requests; LiteLLM translates them to Ollama's OpenAI-compatible format.
+
+### Model tiers
+    
+| Tier             | Env var                          | Mapped model             | Role                 |
+| ---------------- | -------------------------------- | ------------------------ | -------------------- |
+| Sonnet (default) | `ANTHROPIC_DEFAULT_SONNET_MODEL` | `qwen3-coder-30b-32k`    | Primary coding       |
+| Haiku (fast)     | `ANTHROPIC_DEFAULT_HAIKU_MODEL`  | `Qwen3-4B-Instruct-2507` | Planning, routing    |
+| Opus (large ctx) | `ANTHROPIC_DEFAULT_OPUS_MODEL`   | `qwen3-coder-30b-220k`   | Large context (solo) |
+
+### Quick reference
+
+```
+/model qwen3-coder-30b-32k                                  switch to coding model
+/model mfdoom/deepseek-r1-tool-calling:8b                   switch to reasoning model
+/model qwen3.5:27b                                          switch to writing model
+/model dengcao/Qwen3-14B:Q5_K_M                             switch to research model
+/model hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q4_K_M     switch to planning model
+```
+ 
+---
+
+## LiteLLM
+
+**Config:** `scripts/configs/litellm.yaml` → copy to `~/.config/litellm/config.yaml`
+
+Proxy that bridges Claude Code (Anthropic API format) to Ollama (OpenAI format). All models in the core stack are pre-configured.
+
+### Setup
+
+```bash
+pip install litellm
+litellm --config scripts/configs/litellm.yaml --port 4000
+```
+
+### Quick reference
+
+```bash
+litellm --config ~/.config/litellm/config.yaml --port 4000   # start proxy
+curl http://localhost:4000/health                            # verify running
+curl http://localhost:4000/v1/models                         # list routed models
+```
+
+**Tips:**
+- Start LiteLLM before launching Claude Code — it must be up when Claude Code initializes.
+- `drop_params: true` in the config silently drops Anthropic-specific params (e.g. `betas`) that Ollama doesn't accept.
+- To background it: `litellm --config ~/.config/litellm/config.yaml --port 4000 &`.
+
+---
+
 ## Model switching in Ollama directly
 
 ```bash

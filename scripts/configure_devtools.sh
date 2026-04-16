@@ -3,30 +3,8 @@
 
 echo "=== AI TOOL CONFIGURATION BACKUP AND RESTORE SCRIPT ==="
 
-# Colors for output
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
-NC='\033[0m'
-
-print_status() {
-    echo -e "${GREEN}✓ $1${NC}"
-}
-
-print_info() {
-    echo -e "${BLUE}ℹ $1${NC}"
-}
-
-print_warning() {
-    echo -e "${YELLOW}⚠ $1${NC}"
-}
-
-print_error() {
-    echo -e "${RED}✗ $1${NC}"
-}
-
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+. "$SCRIPT_DIR/lib/helpers.sh"
 . "$SCRIPT_DIR/lib/setup_ollama.sh"
 . "$SCRIPT_DIR/lib/setup_grok.sh"
 . "$SCRIPT_DIR/lib/setup_olol.sh"
@@ -40,9 +18,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 . "$SCRIPT_DIR/lib/setup_gemini.sh"
 . "$SCRIPT_DIR/lib/setup_litellm.sh"
 . "$SCRIPT_DIR/lib/check_system_requirements.sh"
+. "$SCRIPT_DIR/lib/install_models.sh"
 
 # Configuration directory
-NEW_CFG_DIR='./configs'
+NEW_CFG_DIR="$SCRIPT_DIR/configs"
 DATE="$(date +%Y-%m-%d)"
 BACKUP_DIR="$HOME/ai_tool_backups"
 
@@ -120,6 +99,7 @@ _run_one() {
         setup:exo)        setup_exo ;;
         setup:gemini)     setup_gemini ;;
         setup:grok)       setup_grok ;;
+        setup:models)     install_coding_assistants ;;
         setup:ollama)     setup_ollama ;;
         setup:olol)       setup_olol ;;
         setup:litellm)    setup_litellm ;;
@@ -153,22 +133,36 @@ _run_for_tools() {
 # Interactive tool picker and action selector
 interactive_menu() {
     # All available tools and their descriptions
-    local tools=(claude codex continue crush exo gemini grok litellm ollama olol opencode)
+    local tools=(
+        ollama 
+        models 
+        claude 
+        codex 
+        crush 
+        gemini 
+        grok 
+        opencode
+        continue 
+        litellm 
+        exo 
+        olol 
+        )
     local descs=(
+        "ollama      - start server + pull base model"
+        "models      - install Ollama models"
         "claude      - install CLI + deploy config"
         "codex       - install Codex CLI"
-        "continue    - deploy Continue.dev config"
         "crush       - install + deploy config"
-        "exo         - install exo distributed inference"
         "gemini      - install Gemini CLI"
         "grok        - install + deploy config"
-        "litellm     - install proxy + deploy config"
-        "ollama      - start server + pull base model"
-        "olol        - install Ollama load balancer"
         "opencode    - install + deploy config"
+        "continue    - deploy Continue.dev config"
+        "litellm     - install proxy + deploy config"
+        "exo         - install exo distributed inference"
+        "olol        - install Ollama load balancer"
     )
     # Default selections: claude(0), codex(1), continue(2), gemini(5), litellm(7), ollama(8), opencode(10)
-    local sel=(1 1 1 0 0 1 0 1 1 0 1)
+    local sel=(0 0 0 0 0 0 0 0 0 0 0 0)
 
     while true; do
         echo ""
@@ -277,11 +271,14 @@ main() {
         install)
             install_tools
             ;;
+        models)
+            install_coding_assistants
+            ;;
         "")
             interactive_menu
             ;;
         *)
-            echo "Usage: $0 {backup|restore|continue|opencode|crush|claude|setup|ollama|grok|olol|exo|codex|gemini|litellm|check|verify|install}"
+            echo "Usage: $0 {backup|restore|continue|opencode|crush|claude|setup|ollama|grok|olol|exo|codex|gemini|litellm|check|verify|install|models}"
             echo "  (no args)   - Interactive tool picker"
             echo "  backup      - Backup all existing configurations"
             echo "  restore     - Restore all configurations from backup"
@@ -300,6 +297,7 @@ main() {
             echo "  check       - Check system requirements"
             echo "  verify      - Verify all tool installations"
             echo "  install     - Install all tools (check + install-if-missing + verify)"
+            echo "  models      - Install Ollama models"
             exit 1
             ;;
     esac

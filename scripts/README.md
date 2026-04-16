@@ -150,14 +150,24 @@ Two models use custom Modelfiles in `./modelfiles/` to set a specific context wi
 weight. Pull the base first, then create both aliases:
 
 ```shell
-# Pull the shared base weight (UD-Q5_K_XL, ~25 GB)
+# Custom Modelfiles — pull base weight, then create aliases
+# All Modelfiles are in scripts/modelfiles/
+#
+# M5 Max 48GB — Q5_K_XL weights
 ollama pull hf.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:UD-Q5_K_XL
+ollama pull hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q4_K_M
 
-# Create the 32k-context alias (~21 GB loaded — default code agent)
-ollama create qwen3-coder-30b-32k -f ./modelfiles/qwen3-coder-30b-32k.txt
+ollama create qwen3-coder-30b-32k  -f ./modelfiles/qwen3-coder-30b-32k-UD-Q5_K_XL.txt   # num_ctx 32768
+ollama create qwen3-coder-30b-220k -f ./modelfiles/qwen3-coder-30b-220k-UD-Q5_K_XL.txt  # num_ctx 220000
+ollama create qwen3-4b-q4 -f ./modelfiles/qwen3-4b-UD-Q4_K_M.txt                        # no num_ctx override
 
-# Create the 220k-context alias (~38 GB loaded — use when you need huge context)
-ollama create qwen3-coder-30b-220k -f ./modelfiles/qwen3-coder-30b-220k.txt
+# M5 Max 64GB — Q6_K_XL weights (higher quality)
+ollama pull hf.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:UD-Q6_K_XL
+ollama pull hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:UD-Q8_K_XL
+
+ollama create qwen3-coder-30b-32k  -f ./modelfiles/qwen3-coder-30b-32k-UD-Q6_K_XL.txt   # num_ctx 134217728
+ollama create qwen3-coder-30b-220k -f ./modelfiles/qwen3-coder-30b-220k-UD-Q6_K_XL.txt  # num_ctx 220000
+ollama create qwen3-4b-q8 -f ./modelfiles/qwen3-4b-UD-Q8_K_XL.txt                       # no num_ctx override
 ```
 
 The Modelfiles simply set `num_ctx`; you can inspect or edit them directly:
@@ -209,7 +219,6 @@ ollama pull deepseek-r1:8b
 
 ## LM Studio
 
-lms Qwen3-Coder-30B-A3B-Instruct-MLX-4bit
 
 
 ## Environment Variable Setup
@@ -270,7 +279,6 @@ grok --prompt "Explain this codebase"
 ```
 scripts/
 ├── configure_devtools.sh        # Main entry point — interactive picker, backup, restore, per-tool setup
-├── ollama-manager.sh            # Ollama server and model management utilities
 ├── README.md                    # This file
 ├── configs/                     # Config files deployed to tool directories on setup
 │   ├── CHEATSHEET.md            # Quick-reference for models and agent roles
@@ -285,7 +293,7 @@ scripts/
 └── lib/                         # Sourced by configure_devtools.sh — one file per tool
     ├── helpers.sh               # print_status/info/warning/error, command_exists
     ├── check_system_requirements.sh
-    ├── ollama-models-lib.sh     # Ollama model pull/management functions
+    ├── install-models.sh        # Ollama model pull/management functions
     ├── setup_all.sh             # Runs all config-deploying setup_* functions
     ├── setup_claude.sh          # Claude Code — install CLI + deploy config + backup/restore
     ├── setup_codex.sh           # Codex CLI — install only

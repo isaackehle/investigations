@@ -13,7 +13,7 @@ schema: "v1"
 
 models:
   # Primary coding model — tool-capable
-  - name: "Qwen3-Coder 30B A3B"
+  - name: "Qwen3 Coder 30B A3B"
     provider: "ollama"
     model: "qwen3-coder-30b-32k"
     roles:
@@ -24,14 +24,14 @@ models:
   # Chat/think model — Mistral Small 24B, strong tool calling
   - name: "Mistral Small 24B Instruct"
     provider: "ollama"
-    model: "hf.co/bartowski/Mistral-Small-24B-Instruct-2501-GGUF:Q4_K_M"
+    model: "qwen3.5:27b"
     roles:
       - "chat"
 
   # Apply/insert — Codestral 22B, best code insertion (no tool calls needed for apply)
   - name: "Codestral 22B"
     provider: "ollama"
-    model: "codestral:22b"
+    model: "codestral:22b-v0.1-q8_0"
     roles:
       - "apply"
 
@@ -66,6 +66,6 @@ models:
   # Fast planning / small tasks
   - name: "Qwen3 4B Instruct 2507"
     provider: ollama
-    model: "hf.co/unsloth/Qwen3-4B-Instruct-2507-GGUF:Q4_K_M"
+    model: "qwen3-4b-q8"
     roles:
       - "chat"

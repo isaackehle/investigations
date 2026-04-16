@@ -67,3 +67,8 @@ backup_litellm() {
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     setup_litellm
 fi
+
+
+# TBD:
+# docker pull docker.litellm.ai/berriai/litellm:main-latest
+# https://docs.litellm.ai/docs/proxy/deploy
