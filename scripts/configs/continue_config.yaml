@@ -1,13 +1,4 @@
-# Models Used:
-# - Code/Chat: hf.co/unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF:Q4_K_M
-# - Think: hf.co/bartowski/Mistral-Small-24B-Instruct-2501-GGUF:Q4_K_M
-# - Autocomplete (light): qwen2.5-coder:1.5b
-# - Autocomplete (heavy): qwen2.5-coder:7b
-# - Apply/Insert: codestral:22b
-# - Embed: nomic-embed-text:latest
-# - Rerank: zerank-2
-
-name: "Claude Code Enhanced Configuration"
+name: "Continue Config - Local Models"
 version: "1.0.0"
 schema: "v1"
 
@@ -22,7 +13,7 @@ models:
       - "summarize"
 
   # Chat/think model — Mistral Small 24B, strong tool calling
-  - name: "Mistral Small 24B Instruct"
+  - name: "Qwen3.5 27B"
     provider: "ollama"
     model: "qwen3.5:27b"
     roles:
